@@ -1,5 +1,8 @@
 let connection;
-const { MOVE_DOWN_KEY, MOVE_LEFT_KEY, MOVE_RIGHT_KEY, MOVE_UP_KEY} = require("./constants");
+let lastkey = "Move: left"
+let automove
+
+const { MOVE_DOWN_KEY, MOVE_LEFT_KEY, MOVE_RIGHT_KEY, MOVE_UP_KEY, messages} = require("./constants");
 
 const setupInput = conn => {
   connection = conn;
@@ -18,25 +21,31 @@ const handleUserInput = function (key) {
   }
   if (key === MOVE_UP_KEY) {
     connection.write("Move: up");
+    lastkey = "Move: up"
   }
   if (key === MOVE_RIGHT_KEY) {
     connection.write("Move: right");
+    lastkey = "Move: right"
   }
   if (key === MOVE_LEFT_KEY) {
     connection.write("Move: left");
+    lastkey = "Move: left"
   }
   if (key === MOVE_DOWN_KEY) {
     connection.write("Move: down");
+    lastkey = "Move: down"
   }
-  if (key === 'g') {
-    connection.write("Say: Well Played");
+  if (messages[key]) {
+    connection.write(messages[key])
   }
-  if (key === 'n') {
-    connection.write("Say: Nice Save!");
-  }
-  if (key === 'o') {
-    connection.write("Say: Oops");
-  }
+
+  clearInterval(automove)
+  automove = setInterval(function () {connection.write(lastkey)}, 50);
+
+  
+
+  
+
 };
 
 module.exports = {setupInput};
